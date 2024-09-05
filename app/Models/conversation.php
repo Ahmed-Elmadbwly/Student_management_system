@@ -24,4 +24,16 @@ class conversation extends Model
             return User::firstWhere('id',$this->sender_id);
         }
     }
+    public function getLastMessage(){
+        return messages::where(function($query) {
+            $query->where('receiver_id', $this->receiver_id)
+                ->where('sender_id', auth()->id());
+        })
+            ->orWhere(function($query) {
+                $query->where('receiver_id', auth()->id())
+                    ->where('sender_id', $this->receiver_id);
+            })
+            ->orderBy('updated_at', 'desc')
+            ->first();
+    }
 }

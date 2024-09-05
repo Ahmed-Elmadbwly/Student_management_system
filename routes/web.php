@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\classController;
+use App\Http\Controllers\admin\coursesController;
 use App\Http\Controllers\admin\studentController;
 use App\Http\Controllers\chatController;
 use App\Http\Controllers\ProfileController;
@@ -22,6 +23,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
+
 Route::middleware('auth')->prefix('admin')->controller(categoryController::class)->group(function () {
     Route::get("/category", "index")->name("category.index");
     Route::get("/category/create", "create")->name("category.create");
@@ -30,6 +32,7 @@ Route::middleware('auth')->prefix('admin')->controller(categoryController::class
     Route::post("/category/{id}", "update")->name("category.update");
     Route::delete("/category/{id}", "delete")->name("category.delete");
 });
+
 Route::middleware('auth')->prefix('admin')->controller(classController::class)->group(function () {
     Route::get("/classes", "index")->name("classes.index");
     Route::get("/classes/create", "create")->name("classes.create");
@@ -38,6 +41,17 @@ Route::middleware('auth')->prefix('admin')->controller(classController::class)->
     Route::post("/classes/{id}", "update")->name("classes.update");
     Route::delete("/classes/{id}", "delete")->name("classes.delete");
 });
+
+Route::middleware('auth')->prefix('admin')->controller(coursesController::class)->group(function () {
+    Route::get("/courses", "index")->name("courses.index");
+    Route::get("/course/create", "create")->name("course.create");
+    Route::post("/course", "store")->name("course.store");
+    Route::get("/course/{id}/edit", "edit")->name("course.edit");
+    Route::post("/course/{id}", "update")->name("course.update");
+    Route::delete("/course/{id}", "delete")->name("course.delete");
+});
+
+
 Route::middleware('auth')->controller(chatController::class)->group(function () {
     Route::get("/chat",'index')->name("chat.index");
     Route::get("/chat/{id}","show")->name("chat.show");

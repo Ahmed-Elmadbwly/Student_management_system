@@ -11,8 +11,8 @@
             <!-- Breadcrumb End -->
 
             <div class="h-[calc(100vh-186px)] overflow-hidden sm:h-[calc(100vh-174px)]">
-                <div class="h-full rounded-sm border border-stroke bg-white shadow-default dark:bg-gray-800 dark:border-gray-700 xl:flex">
-                    <div class="hidden h-full flex-col xl:flex xl:w-1/4">
+                <div class="h-full rounded-sm border border-stroke bg-white shadow-default dark:bg-gray-800 dark:border-gray-700 flex">
+                    <div class=" h-full w-1/3  flex-col flex xl:w-1/4">
                         <!-- ====== Chat List Start -->
                         <div class="flex max-h-full flex-col overflow-auto p-5">
                             <form class="sticky mb-7 dark:bg-gray-800 dark:border-gray-700 ">
@@ -24,10 +24,10 @@
                                     </svg>
                                 </button>
                             </form>
-                            <div class="no-scrollbar max-h-full space-y-2.5 overflow-auto">
+                            <div class="no-scrollbar  max-h-full space-y-2.5 overflow-auto">
                                 <!-- Chat List Item -->
                                 @foreach($conversations as $conv)
-                                <a href="{{route("chat.show",$conv->getReceiver()->id)}}" class="flex cursor-pointer items-center rounded  px-4 py-2 hover:bg-gray-2 dark:hover:bg-strokedark">
+                                    <a href="{{route("chat.show",$conv->getReceiver()->id)}}" class="flex cursor-pointer items-center rounded  px-4 py-2 hover:bg-gray-2 dark:hover:bg-strokedark">
                                         <div class="relative mr-3.5 h-11 w-full max-w-11 rounded-full ">
                                             <img src="{{Storage::url('images/'.$conv->getReceiver()->image)}}" alt="profile" class="h-full w-full rounded-full  object-cover object-center">
                                         </div>
@@ -35,18 +35,18 @@
                                             <h5 class="text-sm font-medium text-black dark:text-white">
                                                 {{$conv->getReceiver()->name}}
                                             </h5>
-
+                                            <p id="lastMessage" class="text-sm font-medium text-gray-400">{{$conv->getLastMessage()->content ?? ""}}</p>
                                         </div>
-                                </a>
+                                    </a>
                                 @endforeach
                             </div>
                         </div>
                         <!-- ====== Chat List End -->
                     </div>
-                    <div class="flex h-full flex-col {{isset($user)?"": "justify-center"}}  border-l border-stroke dark:border-strokedark xl:w-3/4">
+                    <div class="flex h-full flex-col justify-between w-2/3 {{isset($user)?"": "justify-center"}}  border-l border-stroke dark:border-strokedark xl:w-3/4">
                         <!-- ====== Chat Box Start -->
                         @if(!isset($user))
-                        <p class="text-center">Select user and chat with</p>
+                            <p class="text-center">Select user and chat with</p>
                         @else
                             <div class="sticky flex items-center justify-between border-b border-stroke px-6 py-4.5 dark:bg-gray-800 dark:border-gray-700">
                                 <div class="flex items-center ">
@@ -55,7 +55,7 @@
                                     </div>
                                     <div  >
                                         <h5 class="font-medium w-56 text-black dark:text-white">
-                                           {{$user->name}}
+                                            {{$user->name}}
                                         </h5>
                                         <p class="text-sm font-medium text-gray-400">Reply to message</p>
                                     </div>
@@ -90,10 +90,10 @@
                                         @endif
                                     @endforeach
                                 @else
-                                    <p class="text-center m-32">no message found</p>
+                                    <p id="noMessage" class="text-center m-32">no message found</p>
                                 @endif
                             </div>
-                            <div class="sticky bottom-0 border-t border-stroke bg-white px-6 py-5 dark:bg-gray-800 dark:border-gray-700">
+                            <div class="sticky  bottom-0 border-t border-stroke bg-white px-6 py-5 dark:bg-gray-800 dark:border-gray-700">
                                 <div class="flex items-center justify-between space-x-4.5">
                                     @csrf
                                     <div class="relative w-full">
@@ -116,22 +116,27 @@
     </main>
 
     @if(isset($user))
-    <script>
-        window.sendMessage = function() {
-            const messageInput = document.getElementById('messageInput');
-            const message = messageInput.value;
-            axios.post('/chat', { message: message , id: {{$user->id}} })
-                .then(response => {
-                    console.log(response.data);
-                    messageInput.value = '';
+        <script>
+            window.sendMessage = function() {
+                const messageInput = document.getElementById('messageInput');
+                const message = messageInput.value;
+                axios.post('/chat', { message: message , id: {{$user->id}} })
+                    .then(response => {
+                        console.log(response.data);
+                        messageInput.value = '';
 
-                    const utcDateString = response.data.updated_at;
-                    const utcDate = new Date(utcDateString);
-                    const options = {timeZone: 'Africa/Cairo', hour: 'numeric',minute: 'numeric'};
-                    const egyptTimeString = utcDate.toLocaleString('en-US', options);
+                        const lastMessage = document.getElementById('lastMessage');
+                        lastMessage.textContent = response.data.content;
+                        truncateParagraphById('lastMessage');
 
-                    const messages = document.getElementById('messages');
-                    const messageHTML = `
+                        document.getElementById("noMessage").style.display = "none";
+                        const utcDateString = response.data.updated_at;
+                        const utcDate = new Date(utcDateString);
+                        const options = {timeZone: 'Africa/Cairo', hour: 'numeric',minute: 'numeric'};
+                        const egyptTimeString = utcDate.toLocaleString('en-US', options);
+
+                        const messages = document.getElementById('messages');
+                        const messageHTML = `
                 <div class="ml-auto max-w-96">
                     <div class="mb-2.5 rounded-2xl rounded-br-none bg-blue-600 bg-primary px-5 py-3">
                         <p class="font-medium text-white">
@@ -143,43 +148,70 @@
                     </p>
                 </div>
             `;
-                    messages.innerHTML += messageHTML;
+                        messages.innerHTML += messageHTML;
 
-                })
-                .catch(error => console.error(error));
+                    })
+                    .catch(error => console.error(error));
 
-            console.log('sent message');
-        };
-        document.addEventListener('DOMContentLoaded', function () {
-            if (typeof Echo !== 'undefined') {
-                Echo.private(`chat.{{auth()->id()}}`)
-                    .listen('MessageSent', (e) => {
-                        console.log(e.message);
-
-                        const messages2 = document.getElementById('messages');
-
-
-
-                        const messageHtml2 = `
-                                    <div class="max-w-96">
-                                        <p class="mb-2.5 text-sm font-medium">{{$user->name}}</p>
-                                        <div class="mb-2.5 rounded-2xl rounded-tl-none bg-gray-100 px-5 py-3 dark:bg-gray-950">
-                                            <p class="font-medium">
-                                                ${e.message.content}
-                                            </p>
-                                        </div>
-                                        <p class="text-xs font-medium">
-                                            ${egyptTimeString}
-                                        </p>
-                                    </div>
-                                `;
-                        messages2.innerText +=messageHtml2;
-                    });
-            } else {
-                console.error('Echo is not defined');
+                console.log('sent message');
+            };
+            function truncateParagraphById(elementId, limit = 20) {
+                const element = document.getElementById(elementId);
+                if (element && element.textContent.length > limit) {
+                    element.textContent = element.textContent.substring(0, limit) + '...';
+                }
             }
-        });
 
-    </script>
+            document.addEventListener('DOMContentLoaded', function () {
+                truncateParagraphById('lastMessage');
+                if (typeof Echo !== 'undefined') {
+                    console.log(Echo);
+                    Echo.private(`chat.{{auth()->id()}}`)
+                        .listen('MessageSent', (e) => {
+                            console.log(e.message);
+                            document.getElementById("noMessage").style.display = "none";
+                            const messages = document.getElementById('messages');
+                            const lastMessage = document.getElementById('lastMessage');
+                            lastMessage.textContent = e.message.content;
+                            truncateParagraphById('lastMessage');
+
+                            const messageElement = document.createElement('div');
+                            messageElement.className = 'max-w-96';
+
+                            const userName = document.createElement('p');
+                            userName.className = 'mb-2.5 text-sm font-medium';
+                            userName.innerText = "{{$user->name}}";
+                            const messageContent = document.createElement('div');
+                            messageContent.className = 'mb-2.5 rounded-2xl rounded-tl-none bg-gray-100 px-5 py-3 dark:bg-gray-950';
+
+                            const messageText = document.createElement('p');
+                            messageText.className = 'font-medium';
+                            messageText.innerText = e.message.content;
+
+                            messageContent.appendChild(messageText);
+
+                            const utcDateString =e.message.updated_at;
+                            const utcDate = new Date(utcDateString);
+                            const options = {timeZone: 'Africa/Cairo', hour: 'numeric',minute: 'numeric'};
+                            const egyptTimeString = utcDate.toLocaleString('en-US', options);
+                            const messageTimestamp = document.createElement('p');
+                            messageTimestamp.className = 'text-xs font-medium';
+                            messageTimestamp.innerText = egyptTimeString;
+
+                            messageElement.appendChild(userName);
+                            messageElement.appendChild(messageContent);
+                            messageElement.appendChild(messageTimestamp);
+
+                            messages.appendChild(messageElement);
+
+                            messages.scrollTop = messages.scrollHeight;
+                        });
+                } else {
+                    console.error('Echo is not defined');
+                }
+            });
+
+
+        </script>
     @endif
 </x-app-layout>
