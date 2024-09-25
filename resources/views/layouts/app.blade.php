@@ -17,7 +17,13 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             @include('layouts.navigation')
-            @include('layouts.sidebar')
+            @if(auth()->user()->role == 'admin')
+                @include('layouts.sidebar')
+            @elseif(auth()->user()->role == 'teacher')
+                @include('layouts.teacher')
+            @else
+                @include('layouts.student')
+            @endif
             <!-- Page Content -->
             <main class="p-4 mt-12 sm:ml-64">
                 {{ $slot }}

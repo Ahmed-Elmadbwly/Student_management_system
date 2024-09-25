@@ -30,4 +30,15 @@ class Course extends Model
     {
         return User::find($this->createBy);
     }
+    // In Course.php model
+    public function enrollees()
+    {
+        return $this->hasMany(EnrolleCourse::class, 'courseId');
+    }
+
+    public function isEnrolled()
+    {
+        return enrollecourse::where('courseId',$this->id)->where('userId',auth()->id())->exists();
+    }
+
 }
