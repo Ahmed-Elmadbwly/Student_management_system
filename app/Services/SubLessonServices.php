@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AnswerAssignment;
 use App\Models\assignment;
 use App\Models\lessonTest;
 use App\Models\lessonText;
@@ -9,6 +10,7 @@ use App\Models\SubLesson;
 use App\Models\TestOption;
 use App\Models\TestQuestion;
 use Faker\Provider\Text;
+use Illuminate\Support\Facades\Storage;
 
 class SubLessonServices
 {
@@ -26,16 +28,16 @@ class SubLessonServices
 
         if($data['type']=='assignment'){
             $file = $data->file('fileTitle');
-            $filePath = $file->store('uploads');
-            $fileName = basename($filePath);
+            $fileName = time().'.'.$file->getClientOriginalExtension();
+            $file->storeAs('documents', $fileName, 'public');
             assignment::create([
                 'subLessonId'=>$subLesson->id,
                 'fileTitle'=>  $fileName ,
             ]);
         }else if($data['type']=='text'){
             $file = $data->file('videoContent');
-            $filePath = $file->store('videos');
-            $fileName = basename($filePath);
+            $fileName = time().'.'.$file->getClientOriginalExtension();
+            $file->storeAs('videos', $fileName, 'public');
             lessonText::create([
                 'subLessonId'=>$subLesson->id,
                  'textContent'=>$data->textContent,
@@ -45,13 +47,14 @@ class SubLessonServices
             $test = lessonTest::create([
                 'subLessonId'=>$subLesson->id,
                 'quizTitle'=>$data->quizTitle,
-                'time'=>$data->time
+                'time'=>$data->time,
             ]);
 
             foreach ($data->questionText as $questionData) {
                 $question = TestQuestion::create([
                     'questionText' => $questionData['text'],
                     'testId' => $test->id,
+                    'score'=>$questionData['score'],
                 ]);
 
                 foreach ($questionData['optionText'] as $index => $optionText) {
@@ -76,6 +79,10 @@ class SubLessonServices
         if ($subLesson->type == 'assignment') {
             $assignment = assignment::where('subLessonId', $subLessonId)->first();
             $content = array_merge($content, $assignment->toArray());
+            if(auth()->user()->role == 'student'){
+                $answer= AnswerAssignment::where('assignmentId',$assignment->id)->get();
+                $content['answers'] = $answer;
+            }
         }
         else if ($subLesson->type == 'text') {
             $text = lessonText::where('subLessonId', $subLessonId)->first();
@@ -93,6 +100,7 @@ class SubLessonServices
                 $questionArray = [
                     'id' => $question->id,
                     'questionText' => $question->questionText,
+                    'score'=>$question->score,
                     'options' => $options->toArray()
                 ];
                 $content['questions'][] = $questionArray;
@@ -113,17 +121,23 @@ class SubLessonServices
         if ($data['type'] == 'assignment') {
             $assignment = assignment::where('subLessonId', $subLessonId)->first();
             if ($data->hasFile('fileTitle')) {
+                if ( Storage::disk('public')->exists('documents/' . $assignment->fileTitle)) {
+                    Storage::disk('public')->delete('documents/' . $assignment->fileTitle);
+                }
                 $file = $data->file('fileTitle');
-                $filePath = $file->store('uploads');
-                $fileName = basename($filePath);
+                $fileName = time().'.'.$file->getClientOriginalExtension();
+                $file->storeAs('documents', $fileName, 'public');
                 $assignment->update(['fileTitle' => $fileName]);
             }
         } elseif ($data['type'] == 'text') {
             $text = lessonText::where('subLessonId', $subLessonId)->first();
             if ($data->hasFile('videoContent')) {
+                if ( Storage::disk('public')->exists('videos/' . $text->videoContent)) {
+                    Storage::disk('public')->delete('videos/' . $text->videoContent);
+                }
                 $file = $data->file('videoContent');
-                $filePath = $file->store('videos');
-                $fileName = basename($filePath);
+                $fileName = time().'.'.$file->getClientOriginalExtension();
+                $file->storeAs('videos', $fileName, 'public');
                 $text->update([
                     'textContent' => $data->textContent,
                     'videoContent' => $fileName,
@@ -140,7 +154,7 @@ class SubLessonServices
             foreach ($data->questionText as $questionData) {
                 $question = TestQuestion::where('testId', $test->id)->where('id', $questionData['questionId'])->first();
                 if ($question) {
-                    $question->update(['questionText' => $questionData['text']]);
+                    $question->update(['questionText' => $questionData['text'] ,'score' => $questionData['score']]);
                     $i=1;
                     foreach ($questionData['optionText'] as $index => $optionText) {
                         $option = TestOption::where('questionId', $question->id)->where('id', $index)->first();

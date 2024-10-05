@@ -22,6 +22,7 @@ class EnrollController extends Controller
     }
     public function payment(Request $request)
     {
-        return to_route('courses.index')->with($this->enrollService->enrollCourse($request));
+        $this->enrollService->enrollCourse($request);
+        return to_route('courses.index')->with('message','Successfully Enrolled');
     }
 }

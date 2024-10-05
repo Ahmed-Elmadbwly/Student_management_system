@@ -11,5 +11,8 @@ class enrollecourse extends Model
     protected $fillable=[
         'courseId', 'userId','isEnrolled'
     ];
-    
+    public function course()
+    {
+        return $this->belongsTo(course::class);
+    }
 }

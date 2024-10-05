@@ -10,21 +10,16 @@ class FileController extends Controller
 {
     public function downloadFile($filename)
     {
-        $filePath = storage_path('app/uploads/' . $filename);
-        if (file_exists($filePath)) {
-            return response()->download($filePath);
+        $file = Storage::path('public/documents/' . $filename);
+        if (!file_exists($file)) {
+            abort(404);
         }
-        return abort(404, 'File not found');
+        return response()->download($file);
     }
 
     public function showFile($filename)
     {
-        $filePath = storage_path('app/uploads/' . $filename);
-
-        if (file_exists($filePath)) {
-            return response()->file($filePath);
-        }
-
-        return abort(404, 'File not found');
+        $file = Storage::url('documents/' . $filename);
+        return view('showFile', compact('file'));
     }
 }

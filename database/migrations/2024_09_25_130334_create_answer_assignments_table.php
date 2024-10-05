@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('answer_assignments', function (Blueprint $table) {
             $table->id();
             $table->string('answerFile');
+            $table->string('title');
             $table->foreignId('userId')->constrained('users');
             $table->foreignId('assignmentId')->constrained('assignments');
+            $table->bigInteger('score')->nullable();
             $table->timestamps();
         });
     }

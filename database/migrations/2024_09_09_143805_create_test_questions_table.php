@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("questionText");
             $table->foreignId('testId')->constrained('lesson_tests');
+            $table->bigInteger('score');
             $table->timestamps();
         });
     }

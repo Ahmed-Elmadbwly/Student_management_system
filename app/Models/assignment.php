@@ -16,5 +16,4 @@ class assignment extends Model
     {
         return SubLesson::find($this->subLessonId);
     }
-
 }

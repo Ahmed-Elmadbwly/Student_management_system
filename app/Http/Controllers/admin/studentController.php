@@ -28,7 +28,7 @@ class studentController extends Controller
         $st = array_merge($re->toArray(), ['image' => $imageName] );
         $st['role'] = $role;
         user::create($st);
-        return redirect()->route('student.index',$role);
+        return redirect()->route('student.index',$role)->with('message','Successfully Created');
     }
 
     function edit($role,$id)
@@ -53,12 +53,12 @@ class studentController extends Controller
         if($re->password != null ) $pass = $re->password;
         $st = array_merge($re->toArray(), ['image' => $imageName,'password' => $pass] );
         $user->update($st);
-        return redirect()->route('student.index',$role);
+        return redirect()->route('student.index',$role)->with('message','Successfully Updated');
     }
 
     function delete($role,$id)
     {
         user::find($id)->delete();
-        return redirect()->route('student.index',$role);
+        return redirect()->route('student.index',$role)->with('message','Successfully Deleted');
     }
 }

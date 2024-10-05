@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Lesson;
+use App\Models\SubLesson;
+use App\Services\SubLessonServices;
 
 class LessonServices
 {
@@ -25,6 +27,12 @@ class LessonServices
       return  Lesson::find($id)->update($data);
     }
     public function deleteLesson($id){
-        return Lesson::find($id)->delete();
+        $lesson = Lesson::find($id);
+        $subLessons = SubLesson::where('lessonId', $id)->get();
+        $sub = new SubLessonServices();
+        foreach ($subLessons as $subLesson) {
+            $sub->deleteSubLesson($subLesson->id);
+        }
+        return $lesson->delete();
     }
 }

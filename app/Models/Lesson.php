@@ -16,4 +16,12 @@ class Lesson extends Model
     {
         return User::find($this->createBy);
     }
+    public function sublessons()
+    {
+        return $this->hasMany(SubLesson::class,'subLessonId');
+    }
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
 }

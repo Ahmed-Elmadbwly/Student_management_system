@@ -46,8 +46,8 @@
             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="assignment_input">Quiz Title</label>
             <input name="quizTitle" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="text">
             <x-input-error :messages="$errors->get('quizTitle')" class="mt-2" />
-            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="assignment_input">Quiz Time</label>
-            <input name="time" class="block w-full mb-2 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="time">
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="assignment_input">Quiz Time By minute</label>
+            <input name="time" class="block w-full mb-2 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400">
             <x-input-error :messages="$errors->get('time')" class="mt-2" />
             <button type="button" id="add-question-btn" class="bg-blue-500 text-white px-4 py-2 rounded">Add Question</button>
             <div id="questions-container" class="mt-4"></div>
@@ -88,11 +88,10 @@
                     break;
             }
         });
+            let questionIndex = 0;
 
-        let questionIndex = 0;
-
-        // Add Question and Options functionality
-        document.getElementById('add-question-btn').addEventListener('click', function () {
+            // Add Question and Options functionality
+            document.getElementById('add-question-btn').addEventListener('click', function () {
             const questionsContainer = document.getElementById('questions-container');
             questionIndex++;
             let optionIndex = 1;
@@ -108,6 +107,14 @@
             questionInput.placeholder = 'Enter question';
             questionInput.className = 'bg-gray-50 mb-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500';
 
+            // Score input
+            const scoreInput = document.createElement('input');
+            scoreInput.type = 'number';
+            scoreInput.name = `questionText[${questionIndex}][score]`;
+            scoreInput.placeholder = 'Enter score for this question';
+            scoreInput.min = 0; // Ensure score is a non-negative number
+            scoreInput.className = 'bg-gray-50 mb-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500';
+
             // Options container
             const optionsContainer = document.createElement('div');
             optionsContainer.className = 'options-container mb-4';
@@ -118,46 +125,46 @@
             addOptionBtn.className = 'bg-green-500 text-white px-2 py-1 rounded mb-2';
             addOptionBtn.textContent = 'Add Option';
             addOptionBtn.addEventListener('click', function () {
-                const optionContainer = document.createElement('div');
-                optionContainer.className = 'option-container flex items-center mb-2';
+            const optionContainer = document.createElement('div');
+            optionContainer.className = 'option-container flex items-center mb-2';
 
-                // Option input
-                const optionInput = document.createElement('input');
-                optionInput.type = 'text';
-                optionInput.name = `questionText[${questionIndex}][optionText][${optionIndex}]`;
-                optionInput.placeholder = `Option ${optionIndex}`;
-                optionInput.className = 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500';
+            // Option input
+            const optionInput = document.createElement('input');
+            optionInput.type = 'text';
+            optionInput.name = `questionText[${questionIndex}][optionText][${optionIndex}]`;
+            optionInput.placeholder = `Option ${optionIndex}`;
+            optionInput.className = 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500';
 
-                // Correct option radio button
-                const correctOptionInput = document.createElement('input');
-                correctOptionInput.type = 'radio';
-                correctOptionInput.name = `questionText[${questionIndex}][isCorrect]`;
-                correctOptionInput.value = optionIndex;
-                correctOptionInput.className = 'ml-2';
+            // Correct option radio button
+            const correctOptionInput = document.createElement('input');
+            correctOptionInput.type = 'radio';
+            correctOptionInput.name = `questionText[${questionIndex}][isCorrect]`;
+            correctOptionInput.value = optionIndex;
+            correctOptionInput.className = 'ml-2';
 
-                // Correct label
-                const correctLabel = document.createElement('label');
-                correctLabel.textContent = 'Correct';
-                correctLabel.className = 'ml-2 text-gray-900 dark:text-white';
+            // Correct label
+            const correctLabel = document.createElement('label');
+            correctLabel.textContent = 'Correct';
+            correctLabel.className = 'ml-2 text-gray-900 dark:text-white';
 
-                // Remove option button
-                const removeOptionBtn = document.createElement('button');
-                removeOptionBtn.type = 'button';
-                removeOptionBtn.className = 'bg-red-500 text-white ml-2 px-2 py-1 rounded';
-                removeOptionBtn.textContent = 'Remove';
-                removeOptionBtn.addEventListener('click', function () {
-                    optionContainer.remove();
-                });
+            // Remove option button
+            const removeOptionBtn = document.createElement('button');
+            removeOptionBtn.type = 'button';
+            removeOptionBtn.className = 'bg-red-500 text-white ml-2 px-2 py-1 rounded';
+            removeOptionBtn.textContent = 'Remove';
+            removeOptionBtn.addEventListener('click', function () {
+            optionContainer.remove();
+        });
 
-                // Append option input, correct option input, and remove option button
-                optionContainer.appendChild(optionInput);
-                optionContainer.appendChild(correctOptionInput);
-                optionContainer.appendChild(correctLabel);
-                optionContainer.appendChild(removeOptionBtn);
-                optionsContainer.appendChild(optionContainer);
+            // Append option input, correct option input, and remove option button
+            optionContainer.appendChild(optionInput);
+            optionContainer.appendChild(correctOptionInput);
+            optionContainer.appendChild(correctLabel);
+            optionContainer.appendChild(removeOptionBtn);
+            optionsContainer.appendChild(optionContainer);
 
-                optionIndex++;
-            });
+            optionIndex++;
+        });
 
             // Remove question button
             const removeQuestionBtn = document.createElement('button');
@@ -165,17 +172,18 @@
             removeQuestionBtn.className = 'bg-red-500 text-white ml-5 px-2 py-1 rounded mt-2';
             removeQuestionBtn.textContent = 'Remove Question';
             removeQuestionBtn.addEventListener('click', function () {
-                questionBlock.remove();
-            });
+            questionBlock.remove();
+        });
 
-            // Append question input, options container, add option button, and remove question button
+            // Append question input, score input, options container, and buttons to the question block
             questionBlock.appendChild(questionInput);
+            questionBlock.appendChild(scoreInput); // Append the score input
             questionBlock.appendChild(optionsContainer);
             questionBlock.appendChild(addOptionBtn);
             questionBlock.appendChild(removeQuestionBtn);
             questionsContainer.appendChild(questionBlock);
 
-
         });
+
     </script>
 </x-app-layout>

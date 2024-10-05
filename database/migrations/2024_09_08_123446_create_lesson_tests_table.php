@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('lesson_tests', function (Blueprint $table) {
             $table->id();
             $table->string('quizTitle');
-            $table->time('time');
+            $table->bigInteger('time');
             $table->foreignId('subLessonId')->constrained('sub_lessons');
             $table->timestamps();
         });

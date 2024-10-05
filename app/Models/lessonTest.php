@@ -14,4 +14,10 @@ class lessonTest extends Model
     {
         return $this->hasMany(TestQuestion::class, 'testId');
     }
+
+    public function subLesson()
+    {
+        return $this->belongsTo(SubLesson::class, 'subLessonId');
+    }
+
 }

@@ -33,6 +33,7 @@ class SubLessonRequest extends FormRequest
             'questionText.*.text' => 'required_if:type,test|string|nullable',
             'questionText.*.optionText.*' => 'required_if:type,test|string|nullable',
             'questionText.*.isCorrect' => 'required_if:type,test|in:1,2,3,4|nullable',
+            'questionText.*.score' => 'required_if:type,test|numeric|min:0|nullable',
         ];
     }
 }

@@ -9,4 +9,8 @@ class lessonText extends Model
 {
     use HasFactory;
     protected $fillable =['videoContent','textContent','subLessonId'];
+    public function subLesson()
+    {
+        return $this->belongsTo(SubLesson::class, 'subLessonId');
+    }
 }

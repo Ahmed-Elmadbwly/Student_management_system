@@ -29,7 +29,7 @@ class LessonController extends Controller
     public function store(LessonRequest $request ,$id)
     {
         $this->lessonServices->createLesson($request->toArray(),$id);
-        return to_route('lessons.index',$id);
+        return to_route('lessons.index',$id)->with('message','Successfully Created');
     }
 
     /**
@@ -50,12 +50,12 @@ class LessonController extends Controller
     public function update(LessonRequest $request, $courseId, $id)
     {
         $this->lessonServices->updateLesson($request->toArray(),$id);
-        return to_route('lessons.index',$courseId);
+        return to_route('lessons.index',$courseId)->with('message','Successfully Updated');
     }
 
     public function delete($courseId, $id)
     {
         $this->lessonServices->deleteLesson($id);
-        return to_route('lessons.index',$courseId);
+        return to_route('lessons.index',$courseId)->with('message','Successfully Deleted');
     }
 }

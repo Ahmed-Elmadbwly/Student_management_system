@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\categories;
 use App\Models\classes;
 use App\Models\Course;
+use App\Models\enrollecourse;
+use App\Models\Lesson;
 
 class CoursesServices
 {
@@ -35,7 +37,17 @@ class CoursesServices
         return Course::find($id)->update($data);
     }
     public function delete($id){
-        return Course::find($id)->delete();
+         $course = Course::find($id);
+         $lessons = Lesson::where('courseId',$id)->get();
+         $les = new LessonServices;
+         foreach($lessons as $lesson){
+             $les->deleteLesson($lesson->id);
+         }
+         $enrolled = enrollecourse::where('courseId',$id)->get();
+         foreach($enrolled as $enrolle){
+             $enrolle->delete();
+         }
+         return $course->delete();
     }
 
 }

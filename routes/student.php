@@ -10,5 +10,7 @@ Route::middleware('auth')->prefix('student')->controller(EnrollController::class
     Route::post('/payment','payment')->name("student.courses.payment");
 });
 
-Route::post('assignment',[AssignmentController::class,'create'])->name("student.assignments.create");
-
+Route::middleware('auth')->prefix('student')->controller(AssignmentController::class)->group(function () {
+    Route::post('assignment',[AssignmentController::class,'create'])->name("student.assignments.create");
+    Route::delete("assignment/{id}", "delete")->name("student.assignments.delete");
+});

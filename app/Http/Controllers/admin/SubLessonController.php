@@ -35,7 +35,7 @@ class SubLessonController extends Controller
     public function store(SubLessonRequest $request,$courseId,$lessonId)
     {
        $this->SubLessonServices->createSubLesson($lessonId,$request);
-        return to_route('subLessons.index',['courseId'=>$courseId,'lessonId'=>$lessonId]);
+        return to_route('subLessons.index',['courseId'=>$courseId,'lessonId'=>$lessonId])->with('message','Successfully Created');
     }
 
     /**
@@ -61,7 +61,7 @@ class SubLessonController extends Controller
     public function update(SubLessonRequest $request,$courseId,$lessonId, $id)
     {
         $this->SubLessonServices->updateSubLesson($id,$request);
-        return to_route('subLessons.index',['courseId'=>$courseId,'lessonId'=>$lessonId]);
+        return to_route('subLessons.index',['courseId'=>$courseId,'lessonId'=>$lessonId])->with('message','Successfully Updated');
     }
 
     /**
@@ -70,7 +70,7 @@ class SubLessonController extends Controller
     public function delete ($courseId,$lessonId, $id)
     {
         $this->SubLessonServices->deleteSubLesson($id);
-        return to_route('subLessons.index',['courseId'=>$courseId,'lessonId'=>$lessonId]);
+        return to_route('subLessons.index',['courseId'=>$courseId,'lessonId'=>$lessonId])->with('message','Successfully Deleted');
 
     }
 }

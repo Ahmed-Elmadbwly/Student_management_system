@@ -4,6 +4,11 @@
         <h2 class="text-title-md3 mb-3 font-bold text-black dark:text-white">
             Courses
         </h2>
+        @if(session('message'))
+            <div id="alert-message" class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                <span class="font-medium">{{session('message')}}</span>
+            </div>
+        @endif
         <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
             <div class="relative mt-3 ml-3">
                 <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -50,6 +55,7 @@
             <tbody>
             @foreach( $courses as $course)
                 @if($course->isEnrolled()) @continue @endif
+                @if(auth()->user()->role == 'teacher' and $course->createBy() != auth()->user()) @continue @endif
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td class="w-4 p-4"></td>
                     <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
@@ -94,6 +100,12 @@
     </div>
 
     <script>
+        setTimeout(function() {
+            let alertMessage = document.getElementById('alert-message');
+            if (alertMessage) {
+                alertMessage.style.display = 'none';
+            }
+        }, 3000);
         function searchTable() {
             let input = document.getElementById('table-search-users').value.toLowerCase();
 

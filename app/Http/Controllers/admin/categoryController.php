@@ -17,7 +17,6 @@ class categoryController extends Controller
             ->join('users', 'categories.createBy', '=', 'users.id')
             ->select('categories.title', 'users.name', 'categories.id')
             ->get();
-//        dd($category);
         return view("admin.category.index",["categories"=>$category]);
     }
 
@@ -28,8 +27,7 @@ class categoryController extends Controller
 
     public function store(categoryRequest $request){
         categories::create(['title'=>$request->title,'createBy'=>Auth::user()->id]);
-       return redirect()->route('category.index');
-
+       return to_route('category.index')->with('message','Successfully Created');
     }
 
 
@@ -44,11 +42,11 @@ class categoryController extends Controller
 
     public function update(categoryRequest $request,  $id){
         categories::find($id)->update($request->toArray());
-        return redirect()->route('category.index');
+        return redirect()->route('category.index')->with('message','Successfully Updated');
     }
 
     public function delete(string $id){
         categories::find($id)->delete();
-        return redirect()->route('category.index');
+        return redirect()->route('category.index')->with('message','Successfully Deleted');
     }
 }

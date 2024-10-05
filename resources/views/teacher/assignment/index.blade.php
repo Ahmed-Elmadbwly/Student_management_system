@@ -1,13 +1,8 @@
 <x-app-layout>
     <div class="relative mt-6 overflow-x-auto shadow-md sm:rounded-lg">
         <h2 class="text-title-md3 mb-3 font-bold text-black dark:text-white">
-            Categories
+            My Assignments
         </h2>
-        @if(session('message'))
-            <div id="alert-message" class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-                <span class="font-medium">{{session('message')}}</span>
-            </div>
-        @endif
         <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
             <div class="relative mt-3 ml-3">
                 <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -15,9 +10,8 @@
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                     </svg>
                 </div>
-                <input type="text" id="table-search-users" oninput="searchTable()" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for Categories">
+                <input type="text" id="table-search-users" oninput="searchTable()" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for Assignments">
             </div>
-            <a type="button" href="{{route('category.create')}}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Add Category </a>
         </div>
         <table id="classesTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -25,30 +19,23 @@
                 <th scope="col" class="p-5"> </th>
                 <th scope="col" class="px-6 py-3">#</th>
                 <th scope="col" class="px-6 py-3">Title</th>
-                <th scope="col" class="px-6 py-3">Created by</th>
+                <th scope="col" class="px-6 py-3">Course</th>
+                <th scope="col" class="px-6 py-3">Lesson</th>
                 <th scope="col" class="px-6 py-3">Action</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($categories as $category)
+            @foreach($assignments as $assignment)
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td class="w-4 p-4"></td>
                     <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                         {{ $loop->iteration }}
                     </th>
-                    <td class="px-6 py-4">{{$category->title}}</td>
+                    <td class="px-6 py-4">{{$assignment->title}}</td>
+                    <td class="px-6 py-4">{{$assignment->course}}</td>
+                    <td class="px-6 py-4">{{$assignment->lesson}}</td>
                     <td class="px-6 py-4">
-                        <div class="flex items-center">
-                            {{$category->name}}
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <a href="{{route('category.edit',$category->id)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
-                        <form action="{{route('category.delete',$category->id)}}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="submit">| Delete</button>
-                        </form>
+                        <a href="{{route('teacher.assignments.answers',$assignment->id)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Show answers</a>
                     </td>
                 </tr>
             @endforeach
@@ -57,12 +44,6 @@
     </div>
 
     <script>
-        setTimeout(function() {
-            let alertMessage = document.getElementById('alert-message');
-            if (alertMessage) {
-                alertMessage.style.display = 'none';
-            }
-        }, 3000);
         function searchTable() {
             let input = document.getElementById('table-search-users').value.toLowerCase();
             let table = document.getElementById('classesTable');

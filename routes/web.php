@@ -2,6 +2,7 @@
 
 include "dashboard.php";
 include 'student.php';
+include 'teacher.php';
 
 
 use App\Http\Controllers\ProfileController;

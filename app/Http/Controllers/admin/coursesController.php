@@ -28,7 +28,7 @@ class coursesController extends Controller
     public function store(CoursesRequest $request)
     {
        $this->CoursesServices->createCourse($request->toArray());
-       return to_route('courses.index');
+       return to_route('courses.index')->with('message','Successfully Created');
     }
 
     public function show(string $id)
@@ -48,13 +48,13 @@ class coursesController extends Controller
     public function update(CoursesRequest $request, string $id)
     {
         $this->CoursesServices->update($request->toArray(), $id);
-        return to_route("courses.index");
+        return to_route("courses.index")->with('message','Successfully Updated');
     }
 
 
     public function delete(string $id)
     {
         $this->CoursesServices->delete($id);
-        return to_route("courses.index");
+        return to_route("courses.index")->with('message','Successfully Deleted');
     }
 }
