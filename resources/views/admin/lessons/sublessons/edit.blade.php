@@ -64,7 +64,7 @@
                             <input type="text" name="questionText[{{ $question['id'] }}][score]" value="{{ $question['score'] }}" class="bg-gray-50 text-center border ml-3 w-20 border-gray-300 text-gray-900 text-sm rounded-lg  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                             <input hidden name="questionText[{{ $question['id'] }}][questionId]" value="{{$question['id']}}">
                         </div>
-                    </div>
+                </div>
 
                 @foreach($question['options'] as $index=>$option)
                     <div class="option-container flex items-center mb-2 ">

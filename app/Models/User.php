@@ -29,6 +29,16 @@ class User extends Authenticatable
         return $this->hasMany(conversation::class,'sender_id')->orWhere( 'receiver_id',$this->id);
     }
 
+    public function quizAttempts()
+    {
+        return $this->hasMany(QuizAttempt::class, 'userId');
+    }
+    public function answerAssignment()
+    {
+        return $this->hasMany(AnswerAssignment::class, 'userId');
+    }
+
+
 
     /**
      * The attributes that should be hidden for serialization.

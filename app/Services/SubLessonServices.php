@@ -101,7 +101,7 @@ class SubLessonServices
                     'id' => $question->id,
                     'questionText' => $question->questionText,
                     'score'=>$question->score,
-                    'options' => $options->toArray()
+                    'options' => $options
                 ];
                 $content['questions'][] = $questionArray;
             }

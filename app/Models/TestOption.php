@@ -14,4 +14,8 @@ class TestOption extends Model
     {
         return $this->belongsTo(TestQuestion::class, 'questionId');
     }
+    public function answer()
+    {
+        return UserAnswer::where('optionId',$this->id)->first();
+    }
 }

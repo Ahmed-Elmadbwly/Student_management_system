@@ -4,6 +4,7 @@ use App\Http\Controllers\admin\categoryController;
 use App\Http\Controllers\admin\classController;
 use App\Http\Controllers\admin\coursesController;
 use App\Http\Controllers\admin\LessonController;
+use App\Http\Controllers\admin\ScoreBoardController;
 use App\Http\Controllers\admin\studentController;
 use App\Http\Controllers\admin\SubLessonController;
 use App\Http\Controllers\chatController;
@@ -69,7 +70,10 @@ Route::middleware('auth')->controller(chatController::class)->group(function () 
     Route::post("/chat","store")->name("chat.store");
     Route::get("/messages/{id}","messages")->name("chat.messages");
 });
-
+Route::middleware('auth')->prefix('admin')->controller(ScoreBoardController::class)->group(function () {
+    Route::get('/tests','allTests')->name("admin.tests.index");
+    Route::get('/assignment','allAssignments')->name("admin.assignment.index");
+});
 
 Route::middleware('auth')->prefix('admin')->controller(StudentController::class)->group(function () {
 Route::get("/{role}", "index")->name("student.index");

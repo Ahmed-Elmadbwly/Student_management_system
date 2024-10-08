@@ -26,4 +26,10 @@ class SubLesson extends Model
         return $this->hasMany(assignment::class, 'subLessonId')->cascadeOnDelete();
     }
 
+    public function testHasSubmit()
+    {
+        $quizId = lessonTest::where('subLessonId',$this->id)->first();
+        return QuizAttempt::where('userId',auth()->id())->where('quizId',$quizId->id)->first();
+    }
+
 }
