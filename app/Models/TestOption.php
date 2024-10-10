@@ -16,6 +16,6 @@ class TestOption extends Model
     }
     public function answer()
     {
-        return UserAnswer::where('optionId',$this->id)->first();
+        return UserAnswer::where('optionId',$this->id)->where('userId',auth()->id())->first();
     }
 }

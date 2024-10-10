@@ -11,7 +11,7 @@
             </ul>
         </div>
     @endif
-    <form id="test-form" method="POST" action="{{route('student.test.answer',[$courseId,$lessonId,$content['testId']])}}">
+    <form id="test-form" method="POST"  onsubmit="clearLocalStorage()" action="{{route('student.test.answer',[$courseId,$lessonId,$content['testId']])}}">
         @csrf
         <div class="mb-4 flex justify-center">
             <input type="text" value="{{$content['time']}}" id="time" disabled  class="bg-gray-50  border border-gray-300 text-gray-900 text-center text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  w-32 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -41,10 +41,15 @@
         </div>
     </form>
     <script>
+        function clearLocalStorage() {
+            localStorage.removeItem('timeLeft');
+        }
         const timeInput = document.getElementById('time');
         console.log(localStorage.getItem('timeLeft'));
         let originalTime = parseInt(timeInput.value) * 60;
+
         let timeLeft = localStorage.getItem('timeLeft') ? parseInt(localStorage.getItem('timeLeft')) : originalTime;
+
         function startCountdown() {
             let timerInterval = setInterval(function() {
                 if (timeLeft <= 0) {
@@ -56,13 +61,10 @@
                     let seconds = timeLeft % 60;
                     timeInput.value = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
                     localStorage.setItem('timeLeft', timeLeft);
-
                 }
-            }, 1000);
+            }, 1000); // Update every second
         }
         window.onload = startCountdown;
-        document.getElementById('test-form').addEventListener('submit', function() {
-            localStorage.removeItem('timeLeft');
-        });
     </script>
+
 </x-app-layout>

@@ -74,6 +74,7 @@
     </div>
 
     <script>
+        localStorage.removeItem('timeLeft');
         setTimeout(function() {
             let alertMessage = document.getElementById('alert-message');
             if (alertMessage) {

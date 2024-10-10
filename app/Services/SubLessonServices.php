@@ -80,7 +80,7 @@ class SubLessonServices
             $assignment = assignment::where('subLessonId', $subLessonId)->first();
             $content = array_merge($content, $assignment->toArray());
             if(auth()->user()->role == 'student'){
-                $answer= AnswerAssignment::where('assignmentId',$assignment->id)->get();
+                $answer= AnswerAssignment::where('assignmentId',$assignment->id)->where('userId',auth()->id())->get();
                 $content['answers'] = $answer;
             }
         }

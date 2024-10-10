@@ -29,7 +29,9 @@
 
         <script src="https://js.stripe.com/v3/"></script>
         <script>
-            var stripe = Stripe('{{ env('STRIPE_KEY') }}', {
+                console.log("Stripe Key: {{ env('STRIPE_KEY') }}");
+
+    var stripe = Stripe('{{env('STRIPE_KEY')  }}', {
                 locale: 'en'
             });
             var elements = stripe.elements();

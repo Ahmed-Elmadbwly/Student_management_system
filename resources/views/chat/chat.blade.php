@@ -46,7 +46,7 @@
                     <div class="flex h-full flex-col justify-between w-2/3 {{isset($user)?"": "justify-center"}}  border-l border-stroke dark:border-strokedark xl:w-3/4">
                         <!-- ====== Chat Box Start -->
                         @if(!isset($user))
-                            <p class="text-center">Select user and chat with</p>
+                            <p class="text-center mt-52 dark:text-gray-50">Select user and chat with</p>
                         @else
                             <div class="sticky flex items-center justify-between border-b border-stroke px-6 py-4.5 dark:bg-gray-800 dark:border-gray-700">
                                 <div class="flex items-center ">
@@ -129,7 +129,7 @@
                         lastMessage.textContent = response.data.content;
                         truncateParagraphById('lastMessage');
 
-                        document.getElementById("noMessage").style.display = "none";
+                        // document.getElementById("noMessage").style.display='none';
                         const utcDateString = response.data.updated_at;
                         const utcDate = new Date(utcDateString);
                         const options = {timeZone: 'Africa/Cairo', hour: 'numeric',minute: 'numeric'};
@@ -169,7 +169,7 @@
                     Echo.private(`chat.{{auth()->id()}}`)
                         .listen('MessageSent', (e) => {
                             console.log(e.message);
-                            document.getElementById("noMessage").style.display = "none";
+                            // document.getElementById("noMessage").style.display = "none";
                             const messages = document.getElementById('messages');
                             const lastMessage = document.getElementById('lastMessage');
                             lastMessage.textContent = e.message.content;
